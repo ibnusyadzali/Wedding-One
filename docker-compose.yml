@@ -29,7 +29,7 @@ services:
 
   services:
     build:
-      context: ./services/app
+      context: ./server/services/app
       dockerfile: Dockerfile
     command: ["-c","./wait-for-it.sh -t 30 db:5432 && sleep 10 && npm run dev"]
     ports:
@@ -40,7 +40,7 @@ services:
 
   migration:
     build:
-      context: ./services/app
+      context: ./server/services/app
       dockerfile: Dockerfile
     command: ["-c", "./wait-for-it.sh -t 30 db:5432 && npx sequelize-cli db:create && npx sequelize db:migrate && npx sequelize-cli db:seed:all && echo 'DONE' && sleep infinity"]
     depends_on:
@@ -48,17 +48,15 @@ services:
 
   orc:
     build:
-      context: ./orchestrator
+      context: ./server/orchestrator
       dockerfile: Dockerfile
     command: ["-c","./wait-for-it.sh -t 30 redis:6379 && sleep 10 && node app.js"]
     ports:
-      - 45092:4002
+      - 45093:4000
     depends_on:
       - redis
       - migration
 
   redis:
     image: redis
-    command: redis-server --requirepass ${REDIS_PASSWORD}
-    environment:
-      - REDIS_PASSWORD=3jGjJI2YPg9zePRkSttMKwDGo9HAiT7R
+    command: redis-server --requirepass 3jGjJI2YPg9zePRkSttMKwDGo9HAiT7R
