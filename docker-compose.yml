@@ -5,14 +5,14 @@ services:
       context: ./client/user
       dockerfile: Dockerfile
     ports:
-      - 45090:3000
+      - 127.0.0.1:45090:3000
 
   client-vendor:
     build:
       context: ./client/vendor
       dockerfile: Dockerfile
     ports:
-      - 45091:3000
+      - 127.0.0.1:45091:3000
 
   db:
     image: postgres
@@ -33,7 +33,7 @@ services:
       dockerfile: Dockerfile
     command: ["-c","./wait-for-it.sh -t 30 db:5432 && sleep 10 && npm run dev"]
     ports:
-      - 45092:4002
+      - 127.0.0.1:45092:4002
     depends_on:
       - db
       - migration
@@ -52,7 +52,7 @@ services:
       dockerfile: Dockerfile
     command: ["-c","./wait-for-it.sh -t 30 redis:6379 && sleep 10 && node app.js"]
     ports:
-      - 45093:4000
+      - 127.0.0.1:45093:4000
     depends_on:
       - redis
       - migration
