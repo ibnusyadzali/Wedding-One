@@ -1,6 +1,6 @@
 const redis = require('../config/redis')
 const axios = require('axios')
-const BASE_URL = 'https://weddingonebackend.habibiefaried.com'
+const BASE_URL = 'https://wedding-one-server.ibnusyadzali.com'
 
 const invitationTypeDefs = `#GraphQL
   type Invitation {
