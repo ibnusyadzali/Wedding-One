@@ -1,6 +1,6 @@
 const redis = require('../config/redis')
 const axios = require('axios')
-const BASE_URL = 'http://localhost:4002'
+const BASE_URL = 'https://weddingonebackend.habibiefaried.com'
 
 const orderTypeDefs = `#GraphQL
 type Product {
@@ -130,9 +130,9 @@ type Mutation{
 
 const orderResolvers = {
     Query: {
-        getOrdersUser: async (_,args) => {
+        getOrdersUser: async (_, args) => {
             try {
-                const {access_token}=args
+                const { access_token } = args
                 const cache = await redis.get('get:orders')
                 if (cache) {
                     return JSON.parse(cache)
@@ -140,8 +140,8 @@ const orderResolvers = {
                     const { data } = await axios({
                         method: 'get',
                         url: BASE_URL + `/orders/user`,
-                        headers:{
-                            access_token:access_token
+                        headers: {
+                            access_token: access_token
                         }
                     })
                     await redis.set('orders', JSON.stringify(data))
@@ -152,26 +152,26 @@ const orderResolvers = {
                 throw error.response.data
             }
         },
-        getOrderUser: async (_,args) => {
+        getOrderUser: async (_, args) => {
             try {
-                const{orderId,access_token}=args
-                    const { data } = await axios({
-                        method: 'get',
-                        url: BASE_URL + `/orders/${orderId}/user`,
-                        headers:{
-                            access_token:access_token
-                        }
-                    })
-                    return data
-                
+                const { orderId, access_token } = args
+                const { data } = await axios({
+                    method: 'get',
+                    url: BASE_URL + `/orders/${orderId}/user`,
+                    headers: {
+                        access_token: access_token
+                    }
+                })
+                return data
+
             } catch (error) {
                 console.log(error, '<--- error getProducts schema');
                 throw error.response.data
             }
         },
-        getOrdersVendor: async (_,args) => {
+        getOrdersVendor: async (_, args) => {
             try {
-                const {access_token}=args
+                const { access_token } = args
                 const cache = await redis.get('get:orders')
                 if (cache) {
                     return JSON.parse(cache)
@@ -179,8 +179,8 @@ const orderResolvers = {
                     const { data } = await axios({
                         method: 'get',
                         url: BASE_URL + `/orders/vendor`,
-                        headers:{
-                            access_token:access_token
+                        headers: {
+                            access_token: access_token
                         }
                     })
                     await redis.set('orders', JSON.stringify(data))
@@ -191,26 +191,26 @@ const orderResolvers = {
                 throw error.response.data
             }
         },
-        getOrderVendor: async (_,args) => {
+        getOrderVendor: async (_, args) => {
             try {
-                const{orderId,access_token}=args
-                    const { data } = await axios({
-                        method: 'get',
-                        url: BASE_URL + `/orders/${orderId}/vendor`,
-                        headers:{
-                            access_token:access_token
-                        }
-                    })
-                    return data
-                
+                const { orderId, access_token } = args
+                const { data } = await axios({
+                    method: 'get',
+                    url: BASE_URL + `/orders/${orderId}/vendor`,
+                    headers: {
+                        access_token: access_token
+                    }
+                })
+                return data
+
             } catch (error) {
                 console.log(error, '<--- error getProducts schema');
                 throw error.response.data
             }
         },
-        getOrdersUserFilter: async (_,args) => {
+        getOrdersUserFilter: async (_, args) => {
             try {
-                const {access_token,paymentStatus}=args
+                const { access_token, paymentStatus } = args
                 const cache = await redis.get('get:orders')
                 if (cache) {
                     return JSON.parse(cache)
@@ -218,8 +218,8 @@ const orderResolvers = {
                     const { data } = await axios({
                         method: 'get',
                         url: BASE_URL + `/orders/user/${paymentStatus}`,
-                        headers:{
-                            access_token:access_token
+                        headers: {
+                            access_token: access_token
                         }
                     })
                     await redis.set('orders', JSON.stringify(data))
@@ -230,9 +230,9 @@ const orderResolvers = {
                 throw error.response.data
             }
         },
-        getOrdersVendorFilter: async (_,args) => {
+        getOrdersVendorFilter: async (_, args) => {
             try {
-                const {access_token,paymentStatus}=args
+                const { access_token, paymentStatus } = args
                 const cache = await redis.get('get:orders')
                 if (cache) {
                     return JSON.parse(cache)
@@ -240,8 +240,8 @@ const orderResolvers = {
                     const { data } = await axios({
                         method: 'get',
                         url: BASE_URL + `/orders/vendor/${paymentStatus}`,
-                        headers:{
-                            access_token:access_token
+                        headers: {
+                            access_token: access_token
                         }
                     })
                     await redis.set('orders', JSON.stringify(data))
@@ -256,13 +256,13 @@ const orderResolvers = {
     Mutation: {
         createOrder: async (_, args) => {
             try {
-                const {productId,form,access_token}=args
+                const { productId, form, access_token } = args
                 const { data } = await axios({
                     method: 'post',
                     url: BASE_URL + `/orders/${productId}`,
                     data: form,
-                    headers:{
-                        access_token:access_token
+                    headers: {
+                        access_token: access_token
                     }
                 });
                 // console.log(data, '<--- data boy');
@@ -289,13 +289,13 @@ const orderResolvers = {
         // },
         updateOrderUser: async (_, args) => {
             try {
-                const { orderId,form,access_token} = args
+                const { orderId, form, access_token } = args
                 const { data } = await axios({
                     method: 'patch',
                     url: `${BASE_URL}/orders/${orderId}/userSchedule`,
                     data: form,
-                    headers:{
-                        access_token:access_token
+                    headers: {
+                        access_token: access_token
                     }
                 })
                 await redis.del('get:testimonies');
@@ -306,13 +306,13 @@ const orderResolvers = {
         },
         updateOrderVendor: async (_, args) => {
             try {
-                const { orderId,form,access_token} = args
+                const { orderId, form, access_token } = args
                 const { data } = await axios({
                     method: 'patch',
                     url: `${BASE_URL}/orders/${orderId}/vendorSchedule`,
                     data: form,
-                    headers:{
-                        access_token:access_token
+                    headers: {
+                        access_token: access_token
                     }
                 })
                 await redis.del('get:testimonies');
@@ -323,13 +323,13 @@ const orderResolvers = {
         },
         updateReschedule: async (_, args) => {
             try {
-                const { orderId,form,access_token} = args
+                const { orderId, form, access_token } = args
                 const { data } = await axios({
                     method: 'patch',
                     url: `${BASE_URL}/orders/${orderId}/userAllowed`,
                     data: form,
-                    headers:{
-                        access_token:access_token
+                    headers: {
+                        access_token: access_token
                     }
                 })
                 await redis.del('get:testimonies');
