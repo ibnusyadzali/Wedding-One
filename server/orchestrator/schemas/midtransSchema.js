@@ -1,6 +1,6 @@
 const redis = require('../config/redis')
 const axios = require('axios')
-const BASE_URL = 'http://localhost:4002'
+const BASE_URL = 'https://wedding-one-server.ibnusyadzali.com'
 
 const midtransTypeDefs = `#GraphQL
     type MidtransResponse {
@@ -32,14 +32,14 @@ const midtransResolvers = {
     Mutation: {
         midtransToken: async (_, args) => {
             try {
-                const { status,access_token,form } = args
+                const { status, access_token, form } = args
                 const { data } = await axios({
                     method: 'post',
                     url: BASE_URL + '/midtrans/' + status,
-                    headers:{
-                        access_token:access_token
+                    headers: {
+                        access_token: access_token
                     },
-                    data:form
+                    data: form
                 })
 
                 return data

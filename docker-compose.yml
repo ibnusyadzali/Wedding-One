@@ -1,0 +1,72 @@
+version: '3'
+services:
+  client-user:
+    build:
+      context: ./client/user
+      dockerfile: Dockerfile
+    ports:
+      - 127.0.0.1:45090:3000
+
+  client-vendor:
+    build:
+      context: ./client/vendor
+      dockerfile: Dockerfile
+    ports:
+      - 127.0.0.1:45091:3000
+
+  db:
+    image: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    healthcheck:
+      test: ["CMD", "pg_isready", "-h", "localhost", "-p", "5432", "-U", "postgres", "-d", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  services:
+    build:
+      context: ./server/services/app
+      dockerfile: Dockerfile
+    command: ["-c","./wait-for-it.sh -t 30 db:5432 && sleep 10 && npm run dev"]
+    ports:
+      - 127.0.0.1:45092:4002
+    depends_on:
+      - db
+      - migration
+
+  migration:
+    build:
+      context: ./server/services/app
+      dockerfile: Dockerfile
+    command: ["-c", "./wait-for-it.sh -t 30 db:5432 && npx sequelize-cli db:create && npx sequelize db:migrate && npx sequelize-cli db:seed:all && echo 'DONE' && sleep infinity"]
+    depends_on:
+      - db
+
+  orc:
+    build:
+      context: ./server/orchestrator
+      dockerfile: Dockerfile
+    command: ["-c","./wait-for-it.sh -t 30 redis:6379 && sleep 10 && node app.js"]
+    ports:
+      - 127.0.0.1:45093:4000
+    depends_on:
+      - redis
+      - migration
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    ports:
+      - '127.0.0.1:45094:80'
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@ibnusyadzali.com
+      - PGADMIN_DEFAULT_PASSWORD=4dm1n123
+    volumes:
+      - ./pgadmin:/var/lib/pgadmin
+
+  redis:
+    image: redis
+    command: redis-server --requirepass 3jGjJI2YPg9zePRkSttMKwDGo9HAiT7R

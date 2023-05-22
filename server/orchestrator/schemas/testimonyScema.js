@@ -1,6 +1,6 @@
 const redis = require('../config/redis')
 const axios = require('axios')
-const BASE_URL = 'http://localhost:4002'
+const BASE_URL = 'https://wedding-one-server.ibnusyadzali.com'
 
 const testimonyTypeDefs = `#GraphQL
     type Product {
@@ -64,9 +64,9 @@ const testimonyTypeDefs = `#GraphQL
 
 const testimonyResolvers = {
     Query: {
-        getTestimonies: async (_,args) => {
+        getTestimonies: async (_, args) => {
             try {
-                const{productId}=args
+                const { productId } = args
                 const cache = await redis.get('get:testimonies')
                 if (cache) {
                     return JSON.parse(cache)
@@ -88,13 +88,13 @@ const testimonyResolvers = {
         createTestimony: async (_, args) => {
             // console.log(args, '<--- this args');
             try {
-                const{access_token}=args
+                const { access_token } = args
                 const { data } = await axios({
                     method: 'post',
                     url: BASE_URL + '/testimonies',
                     data: args.form,
-                    headers:{
-                        access_token:access_token
+                    headers: {
+                        access_token: access_token
                     }
                 });
                 // console.log(data, '<--- data boy');
@@ -108,13 +108,13 @@ const testimonyResolvers = {
 
         updateTestimony: async (_, args) => {
             try {
-                const { id,form,access_token } = args
+                const { id, form, access_token } = args
                 const { data } = await axios({
                     method: 'patch',
                     url: `${BASE_URL}/testimonies/${id}`,
                     data: form,
-                    headers:{
-                        access_token:access_token
+                    headers: {
+                        access_token: access_token
                     }
                 })
                 await redis.del('get:testimonies');
@@ -126,12 +126,12 @@ const testimonyResolvers = {
 
         deleteTestimony: async (_, args) => {
             try {
-                const { id,access_token } = args
+                const { id, access_token } = args
                 const { data } = await axios({
                     method: 'delete',
                     url: BASE_URL + '/testimonies/' + id,
-                    headers:{
-                        access_token:access_token
+                    headers: {
+                        access_token: access_token
                     }
                 })
                 await redis.del('get:testimonies');
@@ -144,7 +144,7 @@ const testimonyResolvers = {
         },
     },
 
-    
+
 }
 
 module.exports = { testimonyTypeDefs, testimonyResolvers }
