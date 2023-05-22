@@ -149,7 +149,7 @@ const Register = () => {
                       onChange={(e) => {
                         setDataRegister({
                           ...dataRegister,
-                          phone: e.target.value,
+                          phoneNumber: e.target.value,
                         });
 
                       }}

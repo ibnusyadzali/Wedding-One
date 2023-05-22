@@ -57,6 +57,16 @@ services:
       - redis
       - migration
 
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    ports:
+      - '127.0.0.1:45094:80'
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@ibnusyadzali.com
+      - PGADMIN_DEFAULT_PASSWORD=4dm1n123
+    volumes:
+      - ./pgadmin:/var/lib/pgadmin
+
   redis:
     image: redis
     command: redis-server --requirepass 3jGjJI2YPg9zePRkSttMKwDGo9HAiT7R
